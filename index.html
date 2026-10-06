@@ -37,7 +37,7 @@
     <button data-ut="fire">火</button><button data-ut="smoke">烟</button><button data-ut="flash">闪</button>
   </span>
 </div>
-<div class="panel" style="margin-bottom:18px">
+<div class="panel" style="margin-bottom:18px;max-width:760px">
   <h3>互动大图（拖拽平移 · 滚轮缩放 · 图层开关）</h3>
   <div class="sub">跟随顶部阶段/玩家筛选；图层：
     <label><input type="checkbox" class="lyr" data-l="posCT"> CT站位</label>
@@ -184,7 +184,7 @@ function drawHeat(canvas, ptsByPlayer, region) {
 }
 
 // ---- hero interactive map ----
-const hero = { k: 1, tx: 0, ty: 0 };
+const hero = { k: 1.55, tx: -114, ty: -199 };
 const heroCv = document.getElementById('hero-cv');
 const layers = { posCT: false, posT: false, he: true, fire: true, smoke: true, flash: true };
 const UTIL_COLOR = { he: '#ffd54f', fire: '#ff7043', smoke: '#b0bec5', flash: '#4fc3f7' };
@@ -192,7 +192,7 @@ const UTIL_COLOR = { he: '#ffd54f', fire: '#ff7043', smoke: '#b0bec5', flash: '#
 document.querySelectorAll('.lyr').forEach(cb =>
   cb.addEventListener('change', () => { layers[cb.dataset.l] = cb.checked; renderHero(); }));
 document.getElementById('hero-reset').addEventListener('click', () => {
-  hero.k = 1; hero.tx = 0; hero.ty = 0; renderHero();
+  hero.k = 1.55; hero.tx = -114; hero.ty = -199; renderHero();
 });
 
 let drag = null;
