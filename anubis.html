@@ -20,7 +20,6 @@
  .sub { color:#8b95a3; font-size:12px; margin-bottom:8px; }
  .map { position:relative; width:100%; aspect-ratio:1; }
  .map img, .map canvas { position:absolute; inset:0; width:100%; height:100%; }
- .map img { filter: brightness(1.65) contrast(1.06); }
 </style></head><body>
 <h1>team_likwid · Anubis 习惯热图</h1>
 <div class="note">样本：对面赛前最近 Anubis 比赛（逐人最多 4 场、同图筛选）。热区为 nav 区域近似密度，不代表精确箱位；开枪/击杀/被杀按事件位置。
@@ -161,11 +160,8 @@ function drawHeat(canvas, ptsByPlayer, region) {
   if (region) {
     // draw radar crop under the heat crop
     if (IMG_EL.complete) {
-      ctx.save();
-      ctx.filter = 'brightness(1.65) contrast(1.06)';
       ctx.drawImage(IMG_EL, region[0], region[1], region[2], region[3],
                     0, 0, canvas.width, canvas.height);
-      ctx.restore();
     }
     ctx.drawImage(off, region[0], region[1], region[2], region[3],
                   0, 0, canvas.width, canvas.height);
@@ -249,12 +245,7 @@ function renderHero() {
   ctx.save();
   ctx.translate(hero.tx, hero.ty);
   ctx.scale(hero.k, hero.k);
-  if (IMG_EL.complete) {
-    ctx.save();
-    ctx.filter = 'brightness(1.65) contrast(1.06)';
-    ctx.drawImage(IMG_EL, 0, 0);
-    ctx.restore();
-  }
+  if (IMG_EL.complete) ctx.drawImage(IMG_EL, 0, 0);
   const dotR = 3.5 / hero.k, markR = 5.5 / hero.k;
   // kill (player-colored dot) / death (white-ringed dot) layers
   for (const [layerKey, key] of [['kill', 'kill'], ['death', 'death']]) {
@@ -363,11 +354,8 @@ function renderAll() {
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (IMG_EL.complete) {
-      ctx.save();
-      ctx.filter = 'brightness(1.65) contrast(1.06)';
       ctx.drawImage(IMG_EL, region[0], region[1], region[2], region[3],
                     0, 0, canvas.width, canvas.height);
-      ctx.restore();
     }
     const kx = canvas.width / region[2], ky = canvas.height / region[3];
     let n = 0;
