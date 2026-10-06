@@ -72,8 +72,21 @@ const ZOOMS = [
   ['cv-z-mid', 'sub-zm', [430, 540, 460, 320]],       // 中路
 ];
 const IMG_EL = new Image();
-IMG_EL.onload = () => renderAll();
+IMG_EL.onload = () => { buildArtMask(); renderAll(); };
 IMG_EL.src = HEAT_IMG;
+let ART_MASK = null; // Uint8Array: 1 where map art exists
+function buildArtMask() {
+  const c = document.createElement('canvas');
+  c.width = c.height = 1024;
+  const x = c.getContext('2d');
+  x.drawImage(IMG_EL, 0, 0);
+  const d = x.getImageData(0, 0, 1024, 1024).data;
+  ART_MASK = new Uint8Array(1024 * 1024);
+  for (let i = 0; i < ART_MASK.length; i++) {
+    const lum = d[i * 4] + d[i * 4 + 1] + d[i * 4 + 2];
+    ART_MASK[i] = lum > 24 ? 1 : 0;   // near-black = no art
+  }
+}
 const PHASE_LABEL = { all: '全部阶段', early: '开局 0-20s', mid: '中期 20-60s', late: '残局 60s+' };
 
 // player toggles
@@ -132,6 +145,11 @@ function drawHeat(canvas, ptsByPlayer, region) {
     out.data[i + 1] = raw < 0.75 ? 30 * raw : 30 * raw + 200 * (raw - 0.75);
     out.data[i + 2] = 25 * raw;
     out.data[i + 3] = raw < 0.12 ? 0 : 60 + 195 * raw;
+    // clip heat to map art (soft edge: fade the outermost 2px ring)
+    if (ART_MASK) {
+      const p = i / 4;
+      if (!ART_MASK[p]) out.data[i + 3] = 0;
+    }
   }
   o.putImageData(out, 0, 0);
   ctx.globalCompositeOperation = 'source-over';
